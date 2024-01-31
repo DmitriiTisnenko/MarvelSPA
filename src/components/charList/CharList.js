@@ -67,27 +67,34 @@ class CharList extends Component {
         this.setState({error: true, loading: false})
     }
 
-    onItemSelected = (e) => {
-        const charItems = document.querySelectorAll('.char__item');
-        charItems.forEach(item => {
-            item.classList.remove('char__item_selected')
-            if(item === e.currentTarget) {
-                item.classList.add('char__item_selected');
-            }
+    arrRefs = [];
+
+    setRef = (elem) => {
+        this.arrRefs.push(elem);
+    }
+
+    onFocusItem = (id) => {
+        this.arrRefs.forEach(item => {
+           item.classList.remove('char__item_selected');
         })
+        this.arrRefs[id].classList.add('char__item_selected');
     }
 
     createCharElemets = (arr) => {
-        const elems = arr.map(char => {
+        const elems = arr.map((char, i) => {
             let imgClass = char.thumbnail.includes('image_not_available') ? 'contain' : null;
             
             return (
                 <li className="char__item"
                     tabIndex={0}
-                    onClick={(e) => {this.props.onCharSelected(char.id); {this.onItemSelected(e)}}}
+                    ref={this.setRef}
+                    onClick={() => {
+                        this.props.onCharSelected(char.id); 
+                        this.onFocusItem(i);
+                    }}
                     key={char.id}
                     onKeyDown={(e) => {
-                        if(e.key === ' ' || e.key === 'Enter') {
+                        if(e.key === 'Enter') {
                             this.props.onCharSelected(e.target.id);
                             this.onItemSelected(e)
                         }
