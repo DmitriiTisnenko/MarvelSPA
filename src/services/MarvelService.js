@@ -17,6 +17,11 @@ const useMarvelService = () => {
         return _updateCharacter(res.data.results[0]); // передаем в метод для формирования необходимого нам объекта
     }
 
+    const getCharacterByName = async (name) => {
+        const res = await request(`${_apiBase}/characters?name=${name}&${_apiKey}`);
+        return res.data.results.map(char => _updateCharacter(char));
+    }
+
     const getComics = async (offset = 0) => {
         const res = await request(`${_apiBase}comics?limit=8&offset=${offset}&${_apiKey}`);
         return await res.data.results.map(item => _updateComisc(item))
@@ -51,7 +56,8 @@ const useMarvelService = () => {
         }
     }
 
-    return {error, loading, getAllCharacters, getCharacter, getComics, getSingleComics, clearError}
+
+    return {error, loading, getAllCharacters, getCharacter, getCharacterByName, getComics, getSingleComics, clearError}
 }   
 
 export default useMarvelService;
